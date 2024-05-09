@@ -1,3 +1,5 @@
+using KolosExample.Repositories;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -6,6 +8,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddControllers().AddXmlSerializerFormatters();
+
+builder.Services.AddScoped<IHospitalRepository, HospitalRepository>();
 
 var app = builder.Build();
 

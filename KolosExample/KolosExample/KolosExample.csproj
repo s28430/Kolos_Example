@@ -5,11 +5,13 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <InvariantGlobalization>true</InvariantGlobalization>
+        <UserSecretsId>b0fe6f50-005b-498e-a660-643c91822b04</UserSecretsId>
     </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.0"/>
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0"/>
+        <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
     </ItemGroup>
 
     <ItemGroup>
