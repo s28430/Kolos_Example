@@ -31,6 +31,13 @@ public class HospitalController(IHospitalService service) : ControllerBase
     [HttpPost]
     public async Task<IActionResult> AddPrescriptionAsync(PostPrescriptionRequestDto prescriptionRequestDto)
     {
-        return Ok(await _service.AddPrescriptionAsync(prescriptionRequestDto));
+        try
+        {
+            return Ok(await _service.AddPrescriptionAsync(prescriptionRequestDto));
+        }
+        catch (Exception e)
+        {
+            return StatusCode(400, e.Message);
+        }
     }
 }

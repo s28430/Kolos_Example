@@ -27,6 +27,23 @@ public class HospitalService(IHospitalRepository repository) : IHospitalService
 
     public async Task<int> AddPrescriptionAsync(PostPrescriptionRequestDto prescriptionRequestDto)
     {
+        if (prescriptionRequestDto.Date >= prescriptionRequestDto.DueDate)
+        {
+            throw new ArgumentException("Prescription's due date has to be older than its creation date.");
+        }
+
+        if (await _repository.GetDoctorByIdAsync(prescriptionRequestDto.IdDoctor) is null)
+        {
+            throw new 
+                DoctorNotFoundException($"Doctor with id {prescriptionRequestDto.IdDoctor} does not exist.");
+        }
+        
+        if (await _repository.GetPatientByIdAsync(prescriptionRequestDto.IdPatient) is null)
+        {
+            throw new 
+                PatientNotFoundException($"Patient with id {prescriptionRequestDto.IdPatient} does not exist.");
+        }
+        
         return await _repository.AddPrescriptionAsync(prescriptionRequestDto);
     }
 }

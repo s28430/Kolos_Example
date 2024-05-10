@@ -132,4 +132,62 @@ public class HospitalRepository(IConfiguration configuration) : IHospitalReposit
         }
         
     }
+
+    public async Task<Doctor?> GetDoctorByIdAsync(int idDoctor)
+    {
+        await using var conn = new SqlConnection(_configuration["conn-string"]);
+        await conn.OpenAsync();
+
+        await using var cmd = new SqlCommand();
+        cmd.Connection = conn;
+        
+        cmd.CommandText = "SELECT * " +
+                          "FROM doctor " +
+                          "WHERE idDoctor = @idDoctor";
+        cmd.Parameters.AddWithValue("idDoctor", idDoctor);
+
+        await using var dr = await cmd.ExecuteReaderAsync();
+        
+        if (await dr.ReadAsync())
+        {
+            return new Doctor
+            {
+                IdDoctor = (int)dr["idDoctor"],
+                FirstName = dr["firstName"].ToString()!,
+                LastName = dr["lastName"].ToString()!,
+                Email = dr["email"].ToString()!
+            };
+        }
+
+        return null;
+    }
+
+    public async Task<Patient?> GetPatientByIdAsync(int idPatient)
+    {
+        await using var conn = new SqlConnection(_configuration["conn-string"]);
+        await conn.OpenAsync();
+
+        await using var cmd = new SqlCommand();
+        cmd.Connection = conn;
+        
+        cmd.CommandText = "SELECT * " +
+                          "FROM patient " +
+                          "WHERE idPatient = @idPatient";
+        cmd.Parameters.AddWithValue("idPatient", idPatient);
+
+        await using var dr = await cmd.ExecuteReaderAsync();
+        
+        if (await dr.ReadAsync())
+        {
+            return new Patient
+            {
+                IdPatient = (int)dr["idPatient"],
+                FirstName = dr["firstName"].ToString()!,
+                LastName = dr["lastName"].ToString()!,
+                BirthDate = DateTime.Parse(dr["birthDate"].ToString()!)
+            };
+        }
+
+        return null;
+    }
 }
