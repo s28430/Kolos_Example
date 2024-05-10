@@ -36,14 +36,14 @@ public class HospitalService(IHospitalRepository repository) : IHospitalService
     
     private async Task ValidatePatientExistsAsync(int idPatient)
     {
-        if (await _repository.GetDoctorByIdAsync(idPatient) is null)
+        if (await _repository.GetPatientByIdAsync(idPatient) is null)
         {
             throw new 
-                DoctorNotFoundException($"Patient with id {idPatient} does not exist.");
+                PatientNotFoundException($"Patient with id {idPatient} does not exist.");
         }
     }
 
-    public async Task<int> AddPrescriptionAsync(PostPrescriptionRequestDto prescriptionRequestDto)
+    public async Task<Prescription> AddPrescriptionAsync(PostPrescriptionRequestDto prescriptionRequestDto)
     {
         if (prescriptionRequestDto.Date >= prescriptionRequestDto.DueDate)
         {
@@ -54,6 +54,20 @@ public class HospitalService(IHospitalRepository repository) : IHospitalService
         
         await ValidatePatientExistsAsync(prescriptionRequestDto.IdPatient);
         
-        return await _repository.AddPrescriptionAsync(prescriptionRequestDto);
+        var prescriptionId = await _repository.AddPrescriptionAsync(prescriptionRequestDto);
+
+        if (prescriptionId < 0)
+        {
+            throw new Exception("Internal server error occurred.");
+        }
+        
+        return new Prescription
+        {
+            IdPrescription = prescriptionId,
+            Date = prescriptionRequestDto.Date,
+            DueDate = prescriptionRequestDto.DueDate,
+            IdPatient = prescriptionRequestDto.IdPatient,
+            IdDoctor = prescriptionRequestDto.IdDoctor
+        };
     }
 }

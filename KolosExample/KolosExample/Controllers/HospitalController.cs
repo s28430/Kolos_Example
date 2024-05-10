@@ -35,9 +35,17 @@ public class HospitalController(IHospitalService service) : ControllerBase
         {
             return Ok(await _service.AddPrescriptionAsync(prescriptionRequestDto));
         }
+        catch (Exception e) when (e is DoctorNotFoundException or PatientNotFoundException)
+        {
+            return NotFound(e.Message);
+        }
+        catch (ArgumentException e)
+        {
+            return BadRequest(e.Message);
+        }
         catch (Exception e)
         {
-            return StatusCode(400, e.Message);
+            return StatusCode(500, e.Message);
         }
     }
 }
