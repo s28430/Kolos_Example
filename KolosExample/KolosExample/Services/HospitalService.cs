@@ -25,6 +25,24 @@ public class HospitalService(IHospitalRepository repository) : IHospitalService
         return await _repository.GetPrescriptionsByDoctorId(idDoctor);
     }
 
+    private async Task ValidateDoctorExistsAsync(int idDoctor)
+    {
+        if (await _repository.GetDoctorByIdAsync(idDoctor) is null)
+        {
+            throw new 
+                DoctorNotFoundException($"Doctor with id {idDoctor} does not exist.");
+        }
+    }
+    
+    private async Task ValidatePatientExistsAsync(int idPatient)
+    {
+        if (await _repository.GetDoctorByIdAsync(idPatient) is null)
+        {
+            throw new 
+                DoctorNotFoundException($"Patient with id {idPatient} does not exist.");
+        }
+    }
+
     public async Task<int> AddPrescriptionAsync(PostPrescriptionRequestDto prescriptionRequestDto)
     {
         if (prescriptionRequestDto.Date >= prescriptionRequestDto.DueDate)
@@ -32,17 +50,9 @@ public class HospitalService(IHospitalRepository repository) : IHospitalService
             throw new ArgumentException("Prescription's due date has to be older than its creation date.");
         }
 
-        if (await _repository.GetDoctorByIdAsync(prescriptionRequestDto.IdDoctor) is null)
-        {
-            throw new 
-                DoctorNotFoundException($"Doctor with id {prescriptionRequestDto.IdDoctor} does not exist.");
-        }
+        await ValidateDoctorExistsAsync(prescriptionRequestDto.IdDoctor);
         
-        if (await _repository.GetPatientByIdAsync(prescriptionRequestDto.IdPatient) is null)
-        {
-            throw new 
-                PatientNotFoundException($"Patient with id {prescriptionRequestDto.IdPatient} does not exist.");
-        }
+        await ValidatePatientExistsAsync(prescriptionRequestDto.IdPatient);
         
         return await _repository.AddPrescriptionAsync(prescriptionRequestDto);
     }
