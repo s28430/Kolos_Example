@@ -4,5 +4,5 @@ namespace KolosExample.Services;
 
 public interface IHospitalService
 {
-    Task<IEnumerable<Prescription>> GetPrescriptionsAsync();
+    Task<IEnumerable<Prescription>> GetPrescriptionsAsync(string? doctorLastName);
 }
