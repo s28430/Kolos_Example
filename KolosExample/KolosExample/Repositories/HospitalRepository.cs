@@ -1,6 +1,8 @@
+using System.Data.Common;
 using System.Data.SqlClient;
 using KolosExample.Exceptions;
 using KolosExample.Models;
+using KolosExample.Models.DTO;
 
 namespace KolosExample.Repositories;
 
@@ -94,5 +96,40 @@ public class HospitalRepository(IConfiguration configuration) : IHospitalReposit
         }
 
         return result;
+    }
+
+    public async Task<int> AddPrescriptionAsync(PostPrescriptionRequestDto prescriptionRequestDto)
+    {
+        await using var conn = new SqlConnection(_configuration["conn-string"]);
+        await conn.OpenAsync();
+
+        await using var cmd = new SqlCommand();
+        cmd.Connection = conn;
+        
+        await using var transaction = (SqlTransaction) await conn.BeginTransactionAsync();
+        cmd.Transaction = transaction;
+
+        cmd.CommandText = "INSERT INTO prescription([date], dueDate, idPatient, idDoctor) " +
+                          "VALUES (@date, @dueDate, @idPatient, @idDoctor);" +
+                          "SELECT SCOPE_IDENTITY()";
+
+        cmd.Parameters.AddWithValue("date", prescriptionRequestDto.Date);
+        cmd.Parameters.AddWithValue("dueDate", prescriptionRequestDto.DueDate);
+        cmd.Parameters.AddWithValue("idPatient", prescriptionRequestDto.IdPatient);
+        cmd.Parameters.AddWithValue("idDoctor", prescriptionRequestDto.IdDoctor);
+        
+        try
+        {
+
+            var result = Convert.ToInt32(await cmd.ExecuteScalarAsync());
+            await transaction.CommitAsync();
+            return result;
+        }
+        catch (DbException)
+        {
+            await transaction.RollbackAsync();
+            return -1;
+        }
+        
     }
 }

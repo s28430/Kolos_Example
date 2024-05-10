@@ -1,4 +1,5 @@
 using KolosExample.Exceptions;
+using KolosExample.Models.DTO;
 using KolosExample.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,5 +26,11 @@ public class HospitalController(IHospitalService service) : ControllerBase
         {
             return NotFound(e.Message);
         }
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> AddPrescriptionAsync(PostPrescriptionRequestDto prescriptionRequestDto)
+    {
+        return Ok(await _service.AddPrescriptionAsync(prescriptionRequestDto));
     }
 }

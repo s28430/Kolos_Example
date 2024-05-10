@@ -1,5 +1,6 @@
 using KolosExample.Exceptions;
 using KolosExample.Models;
+using KolosExample.Models.DTO;
 using KolosExample.Repositories;
 
 namespace KolosExample.Services;
@@ -22,5 +23,10 @@ public class HospitalService(IHospitalRepository repository) : IHospitalService
         }
 
         return await _repository.GetPrescriptionsByDoctorId(idDoctor);
+    }
+
+    public async Task<int> AddPrescriptionAsync(PostPrescriptionRequestDto prescriptionRequestDto)
+    {
+        return await _repository.AddPrescriptionAsync(prescriptionRequestDto);
     }
 }
