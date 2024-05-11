@@ -1,3 +1,4 @@
+using LeakedKolos.Exceptions;
 using LeakedKolos.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,11 +8,18 @@ namespace LeakedKolos.Controllers;
 [Route("api/books")]
 public class BooksController(IBooksService service) : ControllerBase
 {
-    private IBooksService _service = service;
+    private readonly IBooksService _service = service;
 
     [HttpGet("{id:int}/authors")]
-    public IActionResult GetBookAuthorsAsync(int id)
+    public async Task<IActionResult> GetBookAuthorsAsync(int id)
     {
-        return Ok();
+        try
+        {
+            return Ok(await _service.GetBooksInfoByIdAsync(id));
+        }
+        catch (BookNotFoundException e)
+        {
+            return NotFound(e.Message);
+        }
     }
 }
