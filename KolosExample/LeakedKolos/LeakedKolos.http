@@ -1,0 +1,6 @@
+@LeakedKolos_HostAddress = http://localhost:5084
+
+GET {{LeakedKolos_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
