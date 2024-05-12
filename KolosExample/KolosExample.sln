@@ -2,7 +2,7 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KolosExample", "KolosExample\KolosExample.csproj", "{95128E1E-DB16-4624-B820-F152D07D3DDB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeakedKolos", "LeakedKolos\LeakedKolos.csproj", "{595345DB-C6E6-494C-95C8-D38F33DBD164}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeakedKolosGroupB", "LeakedKolosGroupB\LeakedKolosGroupB.csproj", "{595345DB-C6E6-494C-95C8-D38F33DBD164}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

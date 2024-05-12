@@ -1,6 +1,5 @@
 using System.Data.SqlClient;
 using LeakedKolos.Models;
-using LeakedKolos.Models.DTO;
 
 namespace LeakedKolos.Repositories;
 

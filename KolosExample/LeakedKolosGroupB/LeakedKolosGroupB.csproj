@@ -6,6 +6,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <InvariantGlobalization>false</InvariantGlobalization>
         <UserSecretsId>81b0c863-1502-4417-ae52-68d819936928</UserSecretsId>
+        <RootNamespace>LeakedKolos</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
