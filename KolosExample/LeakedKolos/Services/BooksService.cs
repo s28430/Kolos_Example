@@ -9,7 +9,7 @@ public class BooksService(IBooksRepository repository) : IBooksService
     private readonly IBooksRepository _repository = repository;
 
 
-    public async Task<ResponseBookDto> GetBooksInfoByIdAsync(int idBook)
+    public async Task<object> GetBooksInfoByIdAsync(int idBook)
     {
         var book = await _repository.GetBookByIdAsync(idBook);
         if (book is null)
@@ -24,7 +24,40 @@ public class BooksService(IBooksRepository repository) : IBooksService
         var authorsDto = authors is null 
             ? Array.Empty<AuthorDto>() 
             : authors.Select(author => new AuthorDto(author.FirstName, author.LastName));
-        
-        return new ResponseBookDto(book.IdBook, book.Title, authorsDto);
+
+        return new
+        {
+            id = book.IdBook,
+            title = book.Title,
+            authors = authorsDto
+        };
+    }
+
+    public async Task<object> AddBookWithAuthors(BookInfoDto bookInfoDto)
+    {
+        var authorsIds = new List<int>();
+        foreach (var authorDto in bookInfoDto.Authors)
+        {
+            var temp = await _repository.GetAuthorByNameAsync(authorDto.FirstName, authorDto.LastName);
+            if (temp is null)
+            {
+                throw new AuthorNotFoundException($"Author {authorDto.FirstName} " +
+                                                  $"{authorDto.LastName} does not exist.");
+            }
+            authorsIds.Add(temp.IdAuthor);
+        }
+
+        var insertedId = await _repository.AddBookAsync(bookInfoDto.Title, authorsIds);
+        if (insertedId == -1)
+        {
+            throw new Exception("Internal server error occurred");
+        }
+
+        return new
+        {
+            id = insertedId,
+            title = bookInfoDto.Title,
+            authors = bookInfoDto.Authors
+        };
     }
 }
